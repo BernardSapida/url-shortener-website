@@ -1,46 +1,106 @@
 <template>
   <div id="app">
-    <!-- Target -->
-    <input id="foo" value="https://github.com/zenorocha/clipboard.js.git">
+    <b-navbar class="px-5" toggleable type="dark" variant="dark">
+      <b-navbar-brand href="#">URL Shortener</b-navbar-brand>
+    </b-navbar>
 
-    <!-- Trigger -->
-    <button class="btn" data-clipboard-target="#foo">
-      <font-awesome-icon icon="fa-solid fa-clipboard" />
-    </button>
-    <div>
-      <b-alert show variant="primary">Primary Alert</b-alert>
-      <b-alert show variant="secondary">Secondary Alert</b-alert>
-      <b-alert show variant="success">Success Alert</b-alert>
-      <b-alert show variant="danger">Danger Alert</b-alert>
-      <b-alert show variant="warning">Warning Alert</b-alert>
-      <b-alert show variant="info">Info Alert</b-alert>
-      <b-alert show variant="light">Light Alert</b-alert>
-      <b-alert show variant="dark">Dark Alert</b-alert>
+    <div class="container mt-5">
+      <div class="alert alert-success" role="successAlert" v-if="alert_success">Successfully copied to clipboard.</div>
+      <div class="alert alert-danger" role="dangerAlert" v-if="alert_failed">Invalid URL! Please enter a valid URL.</div>
+      <h1>URL Shortener</h1>
+      <p>URL Shortener is a tool to shorten URLs. Create short links & easy to remember links in seconds.</p>
+      <form @submit.prevent>
+        <div class="form-group flex">
+          <div class="input-group input-group-lg">
+            <input type="text" class="form-control" v-model="long_url" aria-label="Large" aria-describedby="long url" placeholder="Long URL">
+          </div>
+          <button type="submit" @click="shortenURL" class="btn btn-primary">Short URL</button>
+        </div>
+      </form>
+      <div class="row border rounded mt-4 p-2" v-if="isShortened">
+        <div class="col-auto">
+          <p>{{ long_url.slice(0, 27) }}...</p>
+        </div>
+        <div class="col-auto">
+          <p class="shortened_url text-primary" id="generated_url"><strong>{{ shortened_url }}</strong></p>
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-dark py-2 clipboard" data-clipboard-target="#generated_url" @click="copyToClipboard"><font-awesome-icon icon="fa-solid fa-clipboard" /> Copy</button>
+        </div>
+      </div>
     </div>
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 import './js/clipboard.js'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
+  components: {},
+  data() {
+    return {
+      access_token: "fc1188d26d83c9d7d54c56d88713ede7c6973bf1",
+      long_url: "",
+      shortened_url: "",
+      guid: "",
+      isShortened: false,
+      alert_success: false,
+      alert_failed: false,
+      form: {
+          long_url: '',
+      },
+      show: true
+    }
+  },
+  created() {
+    fetch('https://api-ssl.bitly.com/v4/groups', {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${this.access_token}`,
+        "Content-Type": "application/json" 
+      }
+    })
+    .then(response => response.json())
+    .then(data => this.guid = data.groups[0].guid);
+  },
+  methods:{
+    shortenURL() {
+      this.isShortened = false;
+
+      if(this.long_url == '') { 
+        setTimeout(() => this.alert_failed = false, 2000);
+        this.alert_failed = !this.alert_failed;
+        return;
+      }
+
+      fetch('https://api-ssl.bitly.com/v4/shorten', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${this.access_token}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          "group_guid": this.guid,
+          "domain": "bit.ly",
+          "long_url": this.long_url
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if(this.shortened_url != null) this.isShortened = !this.isShortened;
+        this.shortened_url = data.link
+      });
+    },
+    copyToClipboard() {
+      setTimeout(() => this.alert_success = false, 2000);
+      this.alert_success = !this.alert_success;
+    }
   }
+
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+  @import url("../public/css/app.css");
 </style>

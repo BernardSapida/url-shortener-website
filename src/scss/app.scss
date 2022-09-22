@@ -1,0 +1,46 @@
+#app {
+    .container {
+        margin: auto;
+        width: 100%;
+        max-width: 750px;
+
+        & > h1, & > p {
+            text-align: center;
+        }
+
+        & > h1 {
+            font-weight: 700;
+            font-size: 46px;
+        }
+
+        & > p {
+            color: rgba(0, 0, 0, 0.618);
+        }
+
+        & form {
+            .flex {
+                display: flex;
+                gap: 15px;
+
+                & button {
+                    width: 150px;
+                }
+            }
+        }
+
+        .row {
+            margin: auto;
+            width: 100%;
+
+            & div {
+                & p {
+                    font-size: 20px;
+                }
+
+                & > button {
+                    width: 130px;
+                }
+            }
+        }
+    }
+}

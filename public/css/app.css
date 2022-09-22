@@ -1,0 +1,32 @@
+#app .container {
+  margin: auto;
+  width: 100%;
+  max-width: 750px;
+}
+#app .container > h1, #app .container > p {
+  text-align: center;
+}
+#app .container > h1 {
+  font-weight: 700;
+  font-size: 46px;
+}
+#app .container > p {
+  color: rgba(0, 0, 0, 0.618);
+}
+#app .container form .flex {
+  display: flex;
+  gap: 15px;
+}
+#app .container form .flex button {
+  width: 150px;
+}
+#app .container .row {
+  margin: auto;
+  width: 100%;
+}
+#app .container .row div p {
+  font-size: 20px;
+}
+#app .container .row div > button {
+  width: 130px;
+}/*# sourceMappingURL=app.css.map */

@@ -13,25 +13,5 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
-    <script>
-        async function shortenLink() {
-          let requestAPI = await fetch('https://api-ssl.bitly.com/v4/shorten?callback=?', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer {fc1188d26d83c9d7d54c56d88713ede7c6973bf1}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                  "group_guid": "Ba1bc23dE4F",
-                  "domain": "burgerhub",
-                  "long_url": "https://burgerhub.x10.mx/contact-us.php"
-                })
-              });
-          let result = await requestAPI.json();
-          console.log(result);
-        }
-
-        shortenLink();
-    </script>
   </body>
 </html>
