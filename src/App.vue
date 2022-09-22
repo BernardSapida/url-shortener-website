@@ -62,7 +62,7 @@ export default {
     .then(data => this.guid = data.groups[0].guid);
   },
   methods:{
-    shortenURL() {
+    async shortenURL() {
       this.isShortened = false;
 
       if(this.long_url == '') { 
@@ -71,7 +71,7 @@ export default {
         return;
       }
 
-      fetch('https://api-ssl.bitly.com/v4/shorten', {
+      let requestURL = await fetch('https://api-ssl.bitly.com/v4/shorten', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${this.access_token}`,
@@ -83,16 +83,16 @@ export default {
           "long_url": this.long_url
         })
       })
-      .then(response => response.json())
-      .then(data => {
-        if(data.message !== "INVALID_ARG_LONG_URL") {
-          this.isShortened = !this.isShortened;
-          this.shortened_url = data.link
-        } else {
-          setTimeout(() => this.alert_failed = false, 2000);
-          this.alert_failed = !this.alert_failed;
-        }
-      })
+
+      let response = await requestURL.json();
+
+      if(response.message !== "INVALID_ARG_LONG_URL") {
+        this.isShortened = !this.isShortened;
+        this.shortened_url = response.link
+      } else {
+        setTimeout(() => this.alert_failed = false, 2000);
+        this.alert_failed = !this.alert_failed;
+      }
     },
     copyToClipboard() {
       setTimeout(() => this.alert_success = false, 2000);
