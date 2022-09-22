@@ -85,7 +85,6 @@ export default {
       })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
         if(data.message !== "INVALID_ARG_LONG_URL") {
           this.isShortened = !this.isShortened;
           this.shortened_url = data.link
