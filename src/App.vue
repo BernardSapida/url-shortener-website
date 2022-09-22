@@ -47,9 +47,6 @@ export default {
       isShortened: false,
       alert_success: false,
       alert_failed: false,
-      form: {
-          long_url: '',
-      },
       show: true
     }
   },
@@ -88,9 +85,15 @@ export default {
       })
       .then(response => response.json())
       .then(data => {
-        if(this.shortened_url != null) this.isShortened = !this.isShortened;
-        this.shortened_url = data.link
-      });
+        console.log(data)
+        if(data.message !== "INVALID_ARG_LONG_URL") {
+          this.isShortened = !this.isShortened;
+          this.shortened_url = data.link
+        } else {
+          setTimeout(() => this.alert_failed = false, 2000);
+          this.alert_failed = !this.alert_failed;
+        }
+      })
     },
     copyToClipboard() {
       setTimeout(() => this.alert_success = false, 2000);
